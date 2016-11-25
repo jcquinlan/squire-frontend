@@ -12,4 +12,4 @@ class JournalAdmin(admin.ModelAdmin):
 
 @admin.register(Entry)
 class EntryAdmin(admin.ModelAdmin):
-    list_display = ('journal', 'title', 'content')
+    list_display = ('journal', 'content')
