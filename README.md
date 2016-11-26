@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-# lackey-frontend
+# Squire
 
 > Basic dnd management
 
@@ -23,6 +22,3 @@ npm test
 ```
 
 For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
-=======
-dnd-starter
->>>>>>> 7aa3bb36277ac9d2a60e80c050d6d26f3d7d20c6
