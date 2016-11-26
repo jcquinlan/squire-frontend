@@ -1,15 +1,25 @@
 <template>
     <div id="app">
         <nav>
-            <div class="nav-wrapper">
-              <a href="#" class="brand-logo">squire</a>
-              <span v-if="loggedIn">{{ username }}</span>
-              <ul id="nav-mobile" class="right hide-on-med-and-down">
-                  <li v-if="!loggedIn"><router-link to="/login">Login</router-link></li>
-                  <li v-if="!loggedIn"><router-link to="/register">Register</router-link></li>
-              </ul>
+            <div class="container">
+                <div class="nav-wrapper">
+                  <a href="#" class="brand-logo">squire</a>
+                  <span v-if="loggedIn" class="username">hello, {{ username }}</span>
+                  <ul id="nav-mobile" class="right">
+                      <li v-if="!loggedIn"><router-link to="/login">Login</router-link></li>
+                      <li v-if="!loggedIn"><router-link to="/register">Register</router-link></li>
+
+                      <li v-if="loggedIn && selectedCharacter"><router-link to="/dashboard">Dashboard</router-link></li>
+                      <li v-if="loggedIn"><router-link to="/characters">Characters</router-link></li>
+                      <li v-if="loggedIn"><a @click.prevent="logout()">Logout</a></li>
+                  </ul>
+                </div>
             </div>
         </nav>
+
+        <div v-if="loading" class="progress">
+            <div class="indeterminate"></div>
+        </div>
 
         <div id="content">
             <div class="container">
@@ -32,6 +42,12 @@
 import { store } from './store';
 import { resource } from './resources';
 
+function parseJwt (token) {
+            var base64Url = token.split('.')[1];
+            var base64 = base64Url.replace('-', '+').replace('_', '/');
+            return JSON.parse(window.atob(base64));
+        };
+
 export default {
     store,
     computed: {
@@ -41,22 +57,30 @@ export default {
 
         username(){
             return store.state.user.username;
+        },
+
+        selectedCharacter(){
+            return store.state.selected_character;
+        },
+        loading(){
+            return store.state.loading;
         }
     },
-    methods: {},
-    mounted: () => {
+    methods: {
+        logout(){
+            if(localStorage.getItem('user-token')) localStorage.removeItem('user-token');
+            if(store.state.logged_in) store.commit('update_logged_in');
+            if(store.state.user) store.commit('set_user', null);
+            this.$router.push('/login');
+        },
+    },
+    mounted(){
         let token = localStorage.getItem('user-token');
-        if(token) {
-            let requestOptions =  { headers: { "Authorization": `Token ${ token }`}}
-            resource.users.me.get('auth/me/', requestOptions).then((response) => {
-                store.commit('update_logged_in');
-                store.commit('set_user', response.body);
-                this.$router.push('/dashboard');
-            },
-            (error) => {
-                localStorage.removeItem('user-token');
-                this.$router.push('/login');
-            });
+        if (!token){
+            this.$router.push('login');
+        } else {
+            store.commit('set_user', parseJwt(token));
+            store.commit('update_logged_in');
         }
     }
 }
@@ -68,17 +92,42 @@ export default {
 
     html {
       height: 100%;
+      font-family: $primary-font;
+      font-weight: 300;
     }
 
     body {
       height: 100%;
       background-color: $light-grey;
+
+      select {
+          display: block;
+      }
     }
 
     nav {
+        background-color: $primary-cool;
         .nav-wrapper {
             padding: 0 20px;
             background-color: $primary-cool;
+
+            .username {
+                float: right;
+                margin-left: 20px;
+            }
+        }
+    }
+
+    .progress {
+        margin: 0;
+    }
+
+    textarea {
+        resize: none;
+        border: none;
+
+        &:active, &:focus {
+            outline: none;
         }
     }
 
@@ -101,5 +150,17 @@ export default {
 
     .card {
         padding: 10px 20px;
+    }
+
+    .view-title {
+        margin: 40px 0;
+    }
+
+    /* ----------------------------------------------------- Media Queries */
+    @media only screen and (max-width: 992px){
+        nav .brand-logo {
+            left: 0;
+            transform: none;
+        }
     }
 </style>
