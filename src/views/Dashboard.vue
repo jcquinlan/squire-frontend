@@ -43,10 +43,18 @@
             <div class="col m6">
                 <div class="background">
                     <h5>Backstory</h5>
-                    <textarea v-model="selected_character.backstory" v-on:change="updateCharacter" placeholder="Add a backstory." class="backstory"></textarea>
+                    <textarea v-model="selected_character.backstory" v-on:change="updateCharacter" v-on:keyup="auto_grow" placeholder="Add a backstory." class="backstory"></textarea>
                 </div>
             </div>
 
+            <div class="col m6">
+                <div class="chart-wrapper">
+                    <skill-chart :character="selected_character"></skill-chart>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col m6">
                 <div v-if="journals">
                     <div class="row journal-section">
@@ -87,6 +95,7 @@
 <script>
 import { resource } from '../resources';
 import DeleteCharacterModal from '../components/Modal';
+import SkillChart from '../components/SkillChart';
 
 export default {
     data () {
@@ -102,6 +111,12 @@ export default {
         }
     },
     methods: {
+        auto_grow(){
+            let element = event.target;
+            element.style.height = "5px";
+            element.style.height = (element.scrollHeight)+"px";
+        },
+
         selectJournal(journal){
             this.$store.commit('set_selected_journal', journal);
             this.$router.push('/journal')
@@ -150,6 +165,7 @@ export default {
     },
     components: {
         DeleteCharacterModal,
+        SkillChart,
     }
 }
 </script>
@@ -199,6 +215,9 @@ export default {
         }
         .backstory {
             min-height: 200px;
+        }
+        .chart-wrapper {
+            text-align: center;
         }
         .journals {
             display: -webkit-flex;
