@@ -10,7 +10,7 @@
                   </div>
 
                   <div class="input-field col s12">
-                      <input id="password" v-model="loginForm.password" type="text" class="validate" placeholder="Password">
+                      <input id="password" v-model="loginForm.password" type="password" class="validate" placeholder="Password">
                   </div>
               </div>
               <button class="btn" type="button" @click.prevent="login">Login</button>
@@ -41,9 +41,9 @@ export default {
     methods: {
         login(){
             if(this.loginForm.parse().username != '' && this.loginForm.parse().password != ''){
-                this.$store.commit('setLoading', true);
+                this.$store.commit('set_loading', true);
                 resource.login.save(this.loginForm.parse()).then((response) => {
-                    this.$store.commit('setLoading', false);
+                    this.$store.commit('set_loading', false);
                     localStorage.setItem('user-token', response.body.token)
                     this.$http.headers.common['Authorization'] = `JWT ${ localStorage.getItem('user-token')}`;
                     this.loginForm.clean();
@@ -53,7 +53,7 @@ export default {
                     this.$router.push('/characters');
 
                 }, (error) => {
-                    this.$store.commit('setLoading', false);
+                    this.$store.commit('set_loading', false);
                     this.loginErrors = [];
                     for(let key of Object.keys(error.body)){
                         this.loginErrors.push(error.body[key][0])
