@@ -1,24 +1,9 @@
 # Squire
 
-> Basic dnd management
+A simple app to learn Vue.js
 
-## Build Setup
+![alt tag](/static/login.png)
+![alt tag](/static/dashboard.png)
+![alt tag](/static/create.png)
 
-``` bash
-# install dependencies
-npm install
 
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# run unit tests
-npm run unit
-
-# run all tests
-npm test
-```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
